@@ -1,0 +1,36 @@
+body:not(.login-page) {
+  padding-top: 70px;
+}
+
+#global-audio-player {
+  display: none;
+}
+
+.login-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-center > .col-12 {
+  width: min(960px, 92%);
+}
+
+.pin-empty-message {
+  padding: 1.5rem 0;
+}
+
+.navbar {
+  background-color: #5a6b7d !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+.navbar .navbar-brand:hover,
+.navbar .nav-link:hover {
+  text-decoration: none !important;
+}
