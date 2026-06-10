@@ -1,0 +1,284 @@
+<main class="container my-4">
+  <div class="row">
+    <aside class="col-md-3 mb-3">
+      <div class="card mb-3">
+        <div class="card-body text-center">
+          <div class="display-3">😎</div>
+          <h5 class="card-title mt-2">Waldemar Moskvitin</h5>
+          <p class="text-muted mb-0">wamos05</p>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <label for="status-select" class="form-label"
+            >Waldemar's Status</label
+          >
+          <select id="status-select" class="form-select form-select-sm mb-3">
+            <option value="🟢 Online">🟢 Online</option>
+            <option value="🟡 Gleich zurück">🟡 Gleich zurück</option>
+            <option value="☕ Kaffeepause">☕ Kaffeepause</option>
+            <option value="💻 Am Coden">💻 Am Coden</option>
+            <option value="🔴 Offline">🔴 Offline</option>
+          </select>
+          <label for="theme-select" class="form-label">Dein Style</label>
+          <select id="theme-select" class="form-select form-select-sm">
+            <option value="standard">Standard</option>
+            <option value="dark">Dark</option>
+            <option value="bunt">Bunt (nicht barrierefrei)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Über mich</h6>
+          <ul class="list-unstyled mb-0">
+            <li>Alter: <span id="alter-anzeige">–</span></li>
+            <li>Wohnort: Cloppenburg 🇩🇪</li>
+            <li>Status: Single</li>
+            <li>Beschäftigung: dualer Student</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card mb-3 sidebar-interessen">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Interessen</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-secondary">💻 Coding</span>
+            <span class="badge bg-secondary">🏓 Tischtennis</span>
+            <span class="badge bg-secondary">🎲 Brettspiele</span>
+            <span class="badge bg-secondary">🐧 Linux</span>
+            <span class="badge bg-secondary">🏆 WM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Freunde</h6>
+          <p>Freunde: <span id="freunde-anzahl">0</span></p>
+          <button id="friend-btn" type="button" class="btn btn-primary">
+            Freund hinzufügen
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="col-md-9">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h1 class="h3">Heylo, ich bin Waldemar 👋</h1>
+          <p class="mb-0">
+            Dualer Student für Verwaltungsinformatik aus Cloppenburg. Ich bastle
+            an Websites, spiele Tischtennis, höre coole Musik und treibe mich im
+            World Wide Web herum.
+            <a href="#" data-page="lebenslauf">Lebenslauf ansehen</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="audio-player-header mb-3">
+            <h5 class="card-title mb-0">Musik&nbsp;🎵</h5>
+            <div class="audio-controls">
+              <button
+                id="prev-button"
+                class="btn btn-sm btn-secondary"
+                type="button"
+                aria-label="Vorheriger Song"
+              >
+                ⏮
+              </button>
+              <button
+                id="play-pause-button"
+                class="btn btn-sm btn-primary"
+                type="button"
+                aria-label="Play/Pause"
+              >
+                ▶
+              </button>
+              <button
+                id="next-button"
+                class="btn btn-sm btn-secondary"
+                type="button"
+                aria-label="Nächster Song"
+              >
+                ⏭
+              </button>
+            </div>
+            <div
+              id="audio-progress"
+              class="audio-progress d-flex align-items-center"
+              title="Wiedergabefortschritt"
+            >
+              <div class="progress-wrapper flex-fill mb-0 position-relative">
+                <div class="progress">
+                  <div
+                    id="audio-progress-bar"
+                    class="progress-bar"
+                    role="progressbar"
+                    aria-label="Wiedergabefortschritt"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                  ></div>
+                </div>
+                <div
+                  id="audio-progress-tooltip"
+                  class="audio-progress-tooltip"
+                  aria-hidden="true"
+                >
+                  0:00
+                </div>
+              </div>
+              <span id="audio-time-display" class="audio-progress-text"
+                >0:00 / 0:00</span
+              >
+              <div id="speed-dropdown" class="audio-speed-dropdown">
+                <button
+                  id="speed-current"
+                  class="audio-speed-current"
+                  type="button"
+                  aria-label="Geschwindigkeit erhöhen"
+                >
+                  1x
+                </button>
+                <button
+                  id="speed-arrow"
+                  class="audio-speed-arrow"
+                  type="button"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="speed-options"
+                  aria-label="Geschwindigkeitsoptionen öffnen"
+                >
+                  ▾
+                </button>
+                <div
+                  id="speed-options"
+                  class="audio-speed-list"
+                  role="listbox"
+                  aria-label="Wiedergabegeschwindigkeit Auswahl"
+                >
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="0.25"
+                    aria-selected="false"
+                  >
+                    0.25x
+                  </button>
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="0.5"
+                    aria-selected="false"
+                  >
+                    0.5x
+                  </button>
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="0.75"
+                    aria-selected="false"
+                  >
+                    0.75x
+                  </button>
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="1"
+                    aria-selected="true"
+                  >
+                    1x
+                  </button>
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="1.25"
+                    aria-selected="false"
+                  >
+                    1.25x
+                  </button>
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="1.5"
+                    aria-selected="false"
+                  >
+                    1.5x
+                  </button>
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="1.75"
+                    aria-selected="false"
+                  >
+                    1.75x
+                  </button>
+                  <button
+                    class="audio-speed-option"
+                    type="button"
+                    role="option"
+                    data-rate="2"
+                    aria-selected="false"
+                  >
+                    2x
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="audio-widget rounded-2 p-3">
+            <p class="mb-1"><strong>Playlist:</strong></p>
+            <ul id="playlist" class="list-unstyled small"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">Pinnwand</h5>
+            <button
+              id="clear-wall-button"
+              class="btn btn-sm btn-outline-danger"
+            >
+              Pinnwand leeren
+            </button>
+          </div>
+          <div class="row g-2 align-items-center mb-3">
+            <div class="col-sm">
+              <input
+                type="text"
+                id="nachricht-text"
+                class="form-control"
+                placeholder="Was möchtest du Waldemar sagen?"
+              />
+            </div>
+            <div class="col-12 col-sm-auto d-grid">
+              <button id="post-button" class="btn btn-primary">Anheften</button>
+            </div>
+          </div>
+          <ul id="nachrichten-liste" class="list-group"></ul>
+          <div
+            id="pagination-container"
+            class="d-flex gap-2 flex-wrap justify-content-center mt-3"
+          ></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>MySpacePage © 2026 Waldemar Moskvitin</footer>
