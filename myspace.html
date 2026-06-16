@@ -3,7 +3,9 @@
     <aside class="col-md-3 mb-3">
       <div class="card mb-3">
         <div class="card-body text-center">
-          <div class="display-3">😎</div>
+          <div class="display-3">
+            <i class="fa-solid fa-face-sunglasses" aria-hidden="true"></i>
+          </div>
           <h5 class="card-title mt-2">Waldemar Moskvitin</h5>
           <p class="text-muted mb-0">wamos05</p>
         </div>
@@ -15,11 +17,11 @@
             >Waldemar's Status</label
           >
           <select id="status-select" class="form-select form-select-sm mb-3">
-            <option value="🟢 Online">🟢 Online</option>
-            <option value="🟡 Gleich zurück">🟡 Gleich zurück</option>
-            <option value="☕ Kaffeepause">☕ Kaffeepause</option>
-            <option value="💻 Am Coden">💻 Am Coden</option>
-            <option value="🔴 Offline">🔴 Offline</option>
+            <option value="Online">Online</option>
+            <option value="Gleich zurück">Gleich zurück</option>
+            <option value="Kaffeepause">Kaffeepause</option>
+            <option value="Am Coden">Am Coden</option>
+            <option value="Offline">Offline</option>
           </select>
           <label for="theme-select" class="form-label">Dein Style</label>
           <select id="theme-select" class="form-select form-select-sm">
@@ -35,7 +37,7 @@
           <h6 class="card-subtitle mb-2 text-muted">Über mich</h6>
           <ul class="list-unstyled mb-0">
             <li>Alter: <span id="alter-anzeige">–</span></li>
-            <li>Wohnort: Cloppenburg 🇩🇪</li>
+            <li>Wohnort: Cloppenburg</li>
             <li>Status: Single</li>
             <li>Beschäftigung: dualer Student</li>
           </ul>
@@ -46,22 +48,12 @@
         <div class="card-body">
           <h6 class="card-subtitle mb-2 text-muted">Interessen</h6>
           <div class="d-flex flex-wrap gap-2">
-            <span class="badge bg-secondary">💻 Coding</span>
-            <span class="badge bg-secondary">🏓 Tischtennis</span>
-            <span class="badge bg-secondary">🎲 Brettspiele</span>
-            <span class="badge bg-secondary">🐧 Linux</span>
-            <span class="badge bg-secondary">🏆 WM</span>
+            <span class="badge bg-secondary"><i class="fa-solid fa-code" aria-hidden="true"></i> Coding</span>
+            <span class="badge bg-secondary"><i class="fa-solid fa-table-tennis-paddle-ball" aria-hidden="true"></i> Tischtennis</span>
+            <span class="badge bg-secondary"><i class="fa-solid fa-dice" aria-hidden="true"></i> Brettspiele</span>
+            <span class="badge bg-secondary"><i class="fa-brands fa-linux" aria-hidden="true"></i> Linux</span>
+            <span class="badge bg-secondary"><i class="fa-solid fa-trophy" aria-hidden="true"></i> WM</span>
           </div>
-        </div>
-      </div>
-
-      <div class="card mb-3">
-        <div class="card-body">
-          <h6 class="card-subtitle mb-2 text-muted">Freunde</h6>
-          <p>Freunde: <span id="freunde-anzahl">0</span></p>
-          <button id="friend-btn" type="button" class="btn btn-primary">
-            Freund hinzufügen
-          </button>
         </div>
       </div>
     </aside>
@@ -69,12 +61,12 @@
     <section class="col-md-9">
       <div class="card mb-3">
         <div class="card-body">
-          <h1 class="h3">Heylo, ich bin Waldemar 👋</h1>
+          <h1 class="h3"><i class="fa-solid fa-hand-wave" aria-hidden="true"></i>&nbsp;Heylo<br />ich&nbsp;bin&nbsp;Waldemar</h1>
           <p class="mb-0">
             Dualer Student für Verwaltungsinformatik aus Cloppenburg. Ich bastle
             an Websites, spiele Tischtennis, höre coole Musik und treibe mich im
             World Wide Web herum.
-            <a href="#" data-page="lebenslauf">Lebenslauf ansehen</a>
+            <a href="#" data-page="lebenslauf">Lebenslauf&nbsp;ansehen</a>
           </p>
         </div>
       </div>
@@ -82,7 +74,7 @@
       <div class="card mb-3">
         <div class="card-body">
           <div class="audio-player-header mb-3">
-            <h5 class="card-title mb-0">Musik&nbsp;🎵</h5>
+            <h5 class="card-title mb-0"><i class="fa-solid fa-music" aria-hidden="true"></i>&nbsp;Musik</h5>
             <div class="audio-controls">
               <button
                 id="prev-button"
@@ -90,7 +82,7 @@
                 type="button"
                 aria-label="Vorheriger Song"
               >
-                ⏮
+                <i class="fa-solid fa-backward-step" aria-hidden="true"></i>
               </button>
               <button
                 id="play-pause-button"
@@ -98,7 +90,7 @@
                 type="button"
                 aria-label="Play/Pause"
               >
-                ▶
+                <i class="fa-solid fa-play" aria-hidden="true"></i>
               </button>
               <button
                 id="next-button"
@@ -106,7 +98,7 @@
                 type="button"
                 aria-label="Nächster Song"
               >
-                ⏭
+                <i class="fa-solid fa-forward-step" aria-hidden="true"></i>
               </button>
             </div>
             <div
@@ -155,7 +147,7 @@
                   aria-controls="speed-options"
                   aria-label="Geschwindigkeitsoptionen öffnen"
                 >
-                  ▾
+                  <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                 </button>
                 <div
                   id="speed-options"
@@ -248,37 +240,68 @@
 
       <div class="card mb-3">
         <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="card-title mb-0">Pinnwand</h5>
-            <button
-              id="clear-wall-button"
-              class="btn btn-sm btn-outline-danger"
-            >
-              Pinnwand leeren
-            </button>
-          </div>
-          <div class="row g-2 align-items-center mb-3">
-            <div class="col-sm">
-              <input
-                type="text"
-                id="nachricht-text"
-                class="form-control"
-                placeholder="Was möchtest du Waldemar sagen?"
-              />
+          <div class="pinnwand-header mb-3">
+            <h5 class="card-title mb-0" id="pinnwand-titel">Pinnwand</h5>
+            <div class="pinnwand-actions d-flex flex-wrap gap-2 justify-content-end">
+              <button
+                id="tab-papierkorb"
+                type="button"
+                class="btn btn-sm btn-outline-secondary d-none"
+              >
+                <i class="fa-solid fa-trash" aria-hidden="true"></i> Papierkorb
+              </button>
+              <button
+                id="clear-wall-button"
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+              >
+                Pinnwand leeren
+              </button>
+              <button
+                id="papierkorb-wiederherstellen-button"
+                type="button"
+                class="btn btn-sm btn-outline-success d-none"
+              >
+                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Alle wiederherstellen
+              </button>
+              <button
+                id="papierkorb-leeren-button"
+                type="button"
+                class="btn btn-sm btn-outline-danger d-none"
+              >
+                Papierkorb leeren
+              </button>
             </div>
-            <div class="col-12 col-sm-auto d-grid">
-              <button id="post-button" class="btn btn-primary">Anheften</button>
-            </div>
           </div>
-          <ul id="nachrichten-liste" class="list-group"></ul>
-          <div
-            id="pagination-container"
-            class="d-flex gap-2 flex-wrap justify-content-center mt-3"
-          ></div>
+          <div id="pinnwand-inhalt">
+            <div class="row g-2 align-items-center mb-3">
+              <div class="col-sm">
+                <input
+                  type="text"
+                  id="nachricht-text"
+                  class="form-control"
+                  placeholder="Was möchtest du Waldemar sagen?"
+                />
+              </div>
+              <div class="col-12 col-sm-auto d-grid">
+                <button id="post-button" type="button" class="btn btn-primary">
+                  Anheften
+                </button>
+              </div>
+            </div>
+            <ul id="nachrichten-liste" class="list-group"></ul>
+            <div
+              id="chatlängensteuerung-container"
+              class="d-flex gap-2 flex-wrap justify-content-center mt-3"
+            ></div>
+          </div>
+          <div id="papierkorb-inhalt" class="d-none">
+            <ul id="papierkorb-liste" class="list-group"></ul>
+          </div>
         </div>
       </div>
     </section>
   </div>
 </main>
 
-<footer>MySpacePage © 2026 Waldemar Moskvitin</footer>
+<footer>MySpacePage &copy; 2026 Waldemar Moskvitin</footer>

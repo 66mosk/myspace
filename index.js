@@ -35,8 +35,23 @@ function logout() {
     "login.html?loggedOut=" + encodeURIComponent(name || "Gast");
 }
 
+function getPageFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("page");
+}
+
+function updatePageUrl(page, replace = false) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("page", page);
+  if (replace) {
+    window.history.replaceState({ page }, "", url.toString());
+  } else {
+    window.history.pushState({ page }, "", url.toString());
+  }
+}
+
 // Seiten laden
-async function zeigePage(seite, event) {
+async function zeigePage(seite, event, options = { replaceHistory: false }) {
   if (event) event.preventDefault();
 
   const inhalt = document.getElementById("inhalt");
@@ -44,9 +59,6 @@ async function zeigePage(seite, event) {
   const lebenslaufStyle = document.getElementById("stylesheet-lebenslauf");
 
   if (!inhalt) return;
-
-  // aktuelle Seite im localStorage merken
-  localStorage.setItem("aktuelleSeite", seite);
 
   // Style umschalten
   if (myspaceStyle) myspaceStyle.disabled = seite !== "myspace";
@@ -67,7 +79,6 @@ async function zeigePage(seite, event) {
       // Script neu laden sonst myspace.js nachladen
       if (typeof initializeMyspace === "function") {
         initializeMyspace();
-        if (typeof loadWallMessages === "function") loadWallMessages(true);
       } else {
         const oldScript = document.querySelector('script[src^="myspace.js"]');
         if (oldScript) oldScript.remove();
@@ -76,7 +87,6 @@ async function zeigePage(seite, event) {
         script.src = "myspace.js?v=" + Date.now();
         script.onload = () => {
           if (typeof initializeMyspace === "function") initializeMyspace();
-          if (typeof loadWallMessages === "function") loadWallMessages(true);
         };
         document.body.appendChild(script);
       }
@@ -84,6 +94,9 @@ async function zeigePage(seite, event) {
       const main = doc.querySelector(".seite");
       inhalt.innerHTML = main ? main.outerHTML : data;
     }
+
+    localStorage.setItem("aktuelleSeite", seite);
+    updatePageUrl(seite, options.replaceHistory);
   } catch (error) {
     console.error(`Fehler beim Laden von ${seite}.html`, error);
   }
@@ -124,8 +137,15 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   if (checkLogin()) {
-    // zuletzt angezeigte Seite wiederherstellen
-    const letzteSeite = localStorage.getItem("aktuelleSeite") || "myspace";
-    zeigePage(letzteSeite);
+    const urlPage = getPageFromUrl();
+    const letzteSeite =
+      urlPage || localStorage.getItem("aktuelleSeite") || "myspace";
+    zeigePage(letzteSeite, null, { replaceHistory: true });
   }
+
+  window.addEventListener("popstate", (event) => {
+    const page =
+      (event.state && event.state.page) || getPageFromUrl() || "myspace";
+    zeigePage(page, null, { replaceHistory: true });
+  });
 });

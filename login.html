@@ -78,9 +78,7 @@
       function getLoginTheme() {
         const savedTheme = localStorage.getItem("siteTheme");
         if (savedTheme) return savedTheme;
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "standard";
+        return "dark";
       }
 
       function isReservedUsername(username) {
@@ -114,7 +112,7 @@
         );
         setTimeout(() => {
           message.classList.add("d-none");
-        }, 5000);
+        }, 10000);
       }
 
       document
@@ -143,7 +141,11 @@
           sessionStorage.removeItem("screamPlayed");
 
           const userTheme = localStorage.getItem("theme_" + username);
-          if (userTheme) localStorage.setItem("siteTheme", userTheme);
+          if (userTheme) {
+            localStorage.setItem("siteTheme", userTheme);
+          } else {
+            localStorage.setItem("siteTheme", "dark");
+          }
 
           window.location.href = "index.html";
         });
@@ -172,7 +174,11 @@
           sessionStorage.removeItem("screamPlayed");
 
           const userTheme = localStorage.getItem("theme_" + username);
-          if (userTheme) localStorage.setItem("siteTheme", userTheme);
+          if (userTheme) {
+            localStorage.setItem("siteTheme", userTheme);
+          } else {
+            localStorage.setItem("siteTheme", "dark");
+          }
 
           window.location.href = "index.html";
         });

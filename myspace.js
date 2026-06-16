@@ -30,10 +30,10 @@ function initializeMyspace() {
   if (statusSelect) {
     if (isGuest) {
       statusSelect.disabled = true;
-      statusSelect.value = localStorage.getItem("userStatus") || "?? Offline";
+      statusSelect.value = localStorage.getItem("userStatus") || "Offline";
     } else {
       const gespeicherterStatus =
-        localStorage.getItem("userStatus") || "?? Online";
+        localStorage.getItem("userStatus") || "Online";
       statusSelect.value = gespeicherterStatus;
       statusSelect.addEventListener("change", (e) => {
         localStorage.setItem("userStatus", e.target.value);
@@ -88,6 +88,110 @@ function initializeMyspace() {
         }
       });
     }
+  }
+
+  // Papierkorb-Tabs (nur für Admin)
+  const aktuellerUserAdmin = localStorage.getItem("username") || "Gast";
+  if (istUserAdmin(aktuellerUserAdmin)) {
+    const tabPapierkorb = document.getElementById("tab-papierkorb");
+    const pinnwandInhalt = document.getElementById("pinnwand-inhalt");
+    const papierkorbInhalt = document.getElementById("papierkorb-inhalt");
+    const clearWallBtn = document.getElementById("clear-wall-button");
+    const pinnwandTitel = document.getElementById("pinnwand-titel");
+    const papierkorbWiederherstellenBtn = document.getElementById(
+      "papierkorb-wiederherstellen-button",
+    );
+    const papierkorbLeerenBtn = document.getElementById(
+      "papierkorb-leeren-button",
+    );
+
+    if (tabPapierkorb) tabPapierkorb.classList.remove("d-none");
+
+    tabPapierkorb?.addEventListener("click", () => {
+      const imPapierkorb = !papierkorbInhalt.classList.contains("d-none");
+
+      if (imPapierkorb) {
+        pinnwandInhalt.classList.remove("d-none");
+        papierkorbInhalt.classList.add("d-none");
+        if (clearWallBtn) clearWallBtn.classList.remove("d-none");
+        if (papierkorbWiederherstellenBtn) {
+          papierkorbWiederherstellenBtn.classList.add("d-none");
+        }
+        if (papierkorbLeerenBtn) papierkorbLeerenBtn.classList.add("d-none");
+        if (pinnwandTitel) pinnwandTitel.textContent = "Pinnwand";
+        tabPapierkorb.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i> Papierkorb';
+        tabPapierkorb.classList.replace(
+          "btn-secondary",
+          "btn-outline-secondary",
+        );
+      } else {
+        pinnwandInhalt.classList.add("d-none");
+        papierkorbInhalt.classList.remove("d-none");
+        if (clearWallBtn) clearWallBtn.classList.add("d-none");
+        if (papierkorbWiederherstellenBtn) {
+          papierkorbWiederherstellenBtn.classList.remove("d-none");
+        }
+        if (papierkorbLeerenBtn) papierkorbLeerenBtn.classList.remove("d-none");
+        if (pinnwandTitel) pinnwandTitel.textContent = "Papierkorb";
+        tabPapierkorb.innerHTML = '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Zurück';
+        tabPapierkorb.classList.replace(
+          "btn-outline-secondary",
+          "btn-secondary",
+        );
+        loadPapierkorb();
+      }
+    });
+
+    papierkorbWiederherstellenBtn?.addEventListener("click", () => {
+      if (confirm("Alle Nachrichten wiederherstellen?")) {
+        alleWiederherstellen();
+      }
+    });
+
+    papierkorbLeerenBtn?.addEventListener("click", () => {
+      if (
+        confirm(
+          "Papierkorb wirklich leeren? Alle gelöschten Nachrichten werden endgueltig entfernt.",
+        )
+      ) {
+        papierkorbLeeren();
+      }
+    });
+  }
+
+  // Gast-Papierkorb
+  if (isGuest && !istUserAdmin(aktuellerUserAdmin)) {
+    const tabPapierkorb = document.getElementById("tab-papierkorb");
+    const pinnwandInhalt = document.getElementById("pinnwand-inhalt");
+    const papierkorbInhalt = document.getElementById("papierkorb-inhalt");
+    const pinnwandTitel = document.getElementById("pinnwand-titel");
+
+    if (tabPapierkorb) tabPapierkorb.classList.remove("d-none");
+
+    tabPapierkorb?.addEventListener("click", () => {
+      const imPapierkorb = !papierkorbInhalt.classList.contains("d-none");
+
+      if (imPapierkorb) {
+        pinnwandInhalt.classList.remove("d-none");
+        papierkorbInhalt.classList.add("d-none");
+        if (pinnwandTitel) pinnwandTitel.textContent = "Pinnwand";
+        tabPapierkorb.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i> Papierkorb';
+        tabPapierkorb.classList.replace(
+          "btn-secondary",
+          "btn-outline-secondary",
+        );
+      } else {
+        pinnwandInhalt.classList.add("d-none");
+        papierkorbInhalt.classList.remove("d-none");
+        if (pinnwandTitel) pinnwandTitel.textContent = "Papierkorb";
+        tabPapierkorb.innerHTML = '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Zurück';
+        tabPapierkorb.classList.replace(
+          "btn-outline-secondary",
+          "btn-secondary",
+        );
+        loadPapierkorbGast();
+      }
+    });
   }
 
   // Musik-Player
@@ -171,7 +275,9 @@ function initializeMyspace() {
   // Play/Pause aktualisieren
   function updatePlayPauseButton() {
     if (!playPauseButton) return;
-    playPauseButton.textContent = isPlayingState ? "❚❚" : "▶";
+    playPauseButton.innerHTML = isPlayingState
+      ? '<i class="fa-solid fa-pause" aria-hidden="true"></i>'
+      : '<i class="fa-solid fa-play" aria-hidden="true"></i>';
     playPauseButton.setAttribute(
       "aria-label",
       isPlayingState ? "Pause" : "Play",
@@ -551,10 +657,10 @@ function initializeMyspace() {
   }
 }
 
-// PINNWAND
+// Pinnwand
 let cooldownAktiv = false;
 let aktuellSichtbar = 10;
-const pinnwandKey = "pinnwandNachrichten";
+let alleNachrichten = [];
 
 function escapeHTML(str) {
   return String(str).replace(/[&<>"']/g, (match) => {
@@ -569,18 +675,16 @@ function escapeHTML(str) {
   });
 }
 
-function nachrichtSenden() {
+async function nachrichtSenden() {
   const textInput = document.getElementById("nachricht-text");
   const postBtn = document.getElementById("post-button");
   if (!textInput || !postBtn) return;
 
   const text = textInput.value.trim();
-
   if (text === "") {
     alert("Bitte gib eine Nachricht ein, bevor du sie anheften möchtest.");
     return;
   }
-
   if (cooldownAktiv) {
     alert("Bitte warte kurz, bevor du eine weitere Nachricht sendest.");
     return;
@@ -590,31 +694,29 @@ function nachrichtSenden() {
   const jetzt = new Date();
 
   const neueNachricht = {
-    id: jetzt.getTime().toString(),
     name: aktuellerUser,
     text: text,
     zeit: jetzt.toLocaleTimeString("de-DE", {
       hour: "2-digit",
       minute: "2-digit",
     }),
+    timestamp: jetzt.getTime(),
   };
 
-  let nachrichten = [];
   try {
-    nachrichten = JSON.parse(localStorage.getItem(pinnwandKey)) || [];
+    const { collection, addDoc } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    await addDoc(collection(window.db, "pinnwand"), neueNachricht);
   } catch (e) {
-    nachrichten = [];
+    console.error("Fehler beim Speichern:", e);
+    return;
   }
 
-  nachrichten.push(neueNachricht);
-  localStorage.setItem(pinnwandKey, JSON.stringify(nachrichten));
-
   textInput.value = "";
-
   cooldownAktiv = true;
   postBtn.disabled = true;
   const originalText = postBtn.textContent;
-  postBtn.textContent = "⏳";
+  postBtn.textContent = "…";
 
   setTimeout(() => {
     cooldownAktiv = false;
@@ -625,28 +727,50 @@ function nachrichtSenden() {
   loadWallMessages(false);
 }
 
-function loadWallMessages(autoScroll = false) {
+async function loadWallMessages(autoScroll = false, ausDatenbankLaden = true) {
   const liste = document.getElementById("nachrichten-liste");
   if (!liste) return;
 
   liste.className = "list-group p-2 border rounded pinnwand-bg";
-  liste.innerHTML = "";
 
-  let nachrichten = [];
-  try {
-    nachrichten = JSON.parse(localStorage.getItem(pinnwandKey)) || [];
-  } catch (e) {
-    nachrichten = [];
+  if (ausDatenbankLaden) {
+    try {
+      const { collection, getDocs, orderBy, query, doc, deleteDoc } =
+        await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+      const q = query(
+        collection(window.db, "pinnwand"),
+        orderBy("timestamp", "asc"),
+      );
+      const snapshot = await getDocs(q);
+      const dreissigTage = 30 * 24 * 60 * 60 * 1000;
+      const jetzt = Date.now();
+
+      // überfällige wirklich löschen
+      const faellig = snapshot.docs.filter(
+        (d) => d.data().deletedAt && jetzt - d.data().deletedAt > dreissigTage,
+      );
+      faellig.forEach((d) => deleteDoc(doc(window.db, "pinnwand", d.id)));
+
+      // gelöschte rausfiltern
+      alleNachrichten = snapshot.docs
+        .filter((d) => !d.data().deletedAt)
+        .map((d) => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+      console.error("Fehler beim Laden:", e);
+      alleNachrichten = [];
+    }
   }
 
-  if (nachrichten.length === 0) {
+  liste.innerHTML = "";
+
+  if (alleNachrichten.length === 0) {
     liste.innerHTML =
       '<div class="text-muted text-center my-auto pin-empty-message">Keine Nachrichten bisher.</div>';
-    renderPaginationButtons(0);
+    renderChatlängensteuerungButtons(0);
     return;
   }
 
-  const reversedNachrichten = [...nachrichten].reverse();
+  const reversedNachrichten = [...alleNachrichten].reverse();
 
   const geladeneNachrichten = reversedNachrichten.slice(0, aktuellSichtbar);
 
@@ -657,7 +781,7 @@ function loadWallMessages(autoScroll = false) {
   let lastAuthor = "";
 
   geladeneNachrichten.forEach((msg) => {
-    const msgDate = new Date(Number(msg.id) || msg.id);
+    const msgDate = new Date(Number(msg.timestamp) || 0);
     const dateString = msgDate.toLocaleDateString("de-DE", {
       day: "2-digit",
       month: "2-digit",
@@ -700,7 +824,7 @@ function loadWallMessages(autoScroll = false) {
 
     const darfLoeschen = istEigener || istAdmin;
     const deleteBtnHtml = darfLoeschen
-      ? `<button class="btn btn-sm text-danger border-0 p-0 delete-msg-btn ms-2" data-id="${msg.id}" title="Nachricht löschen" style="font-size: 1.1rem; line-height: 1; background: transparent; color: ${
+      ? `<button class="btn btn-sm text-danger border-0 p-0 delete-msg-btn ms-2" data-id="${msg.id}" title="Nachricht löschen" aria-label="Nachricht löschen" style="font-size: 1.1rem; line-height: 1; background: transparent; color: ${
           istEigener ? "#ff8080" : "#dc3545"
         } !important;">&times;</button>`
       : "";
@@ -736,15 +860,15 @@ function loadWallMessages(autoScroll = false) {
     });
   });
 
-  renderPaginationButtons(nachrichten.length);
+  renderChatlängensteuerungButtons(alleNachrichten.length);
 
   if (autoScroll) {
     liste.scrollTop = 0;
   }
 }
 
-function renderPaginationButtons(totalMessages) {
-  const container = document.getElementById("pagination-container");
+function renderChatlängensteuerungButtons(totalMessages) {
+  const container = document.getElementById("chatlängensteuerung-container");
   if (!container) return;
 
   container.innerHTML = "";
@@ -755,17 +879,24 @@ function renderPaginationButtons(totalMessages) {
 
   const zeigeWeniger = aktuellSichtbar > 10;
   const zeigeMehr = totalMessages > aktuellSichtbar;
+  const ladeChatLaengeNeu = (sichtbareNachrichten) => {
+    aktuellSichtbar = sichtbareNachrichten;
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    loadWallMessages(false, false);
+  };
 
   const lessBtn = document.createElement("button");
   lessBtn.type = "button";
   lessBtn.className = "btn btn-secondary btn-sm";
   lessBtn.textContent = "Weniger anzeigen";
+  lessBtn.addEventListener("mousedown", (e) => e.preventDefault());
   if (!zeigeWeniger) {
     lessBtn.disabled = true;
   } else {
     lessBtn.addEventListener("click", () => {
-      aktuellSichtbar = Math.max(10, aktuellSichtbar - 10);
-      loadWallMessages(false);
+      ladeChatLaengeNeu(Math.max(10, aktuellSichtbar - 10));
     });
   }
   container.appendChild(lessBtn);
@@ -774,30 +905,331 @@ function renderPaginationButtons(totalMessages) {
   moreBtn.type = "button";
   moreBtn.className = "btn btn-primary btn-sm";
   moreBtn.textContent = "Ältere Nachrichten laden";
+  moreBtn.addEventListener("mousedown", (e) => e.preventDefault());
   if (!zeigeMehr) {
     moreBtn.disabled = true;
   } else {
     moreBtn.addEventListener("click", () => {
-      aktuellSichtbar += 10;
-      loadWallMessages(false);
+      ladeChatLaengeNeu(aktuellSichtbar + 10);
     });
   }
   container.appendChild(moreBtn);
 }
 
-function deleteMessage(id) {
-  let nachrichten = [];
+async function deleteMessage(id) {
   try {
-    nachrichten = JSON.parse(localStorage.getItem(pinnwandKey)) || [];
+    const { doc, updateDoc } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    await updateDoc(doc(window.db, "pinnwand", id), {
+      deletedAt: Date.now(),
+      deletedBy: localStorage.getItem("username") || "Gast",
+    });
   } catch (e) {
-    nachrichten = [];
+    console.error("Fehler beim Löschen:", e);
+    return;
   }
-  nachrichten = nachrichten.filter((msg) => String(msg.id) !== String(id));
-  localStorage.setItem(pinnwandKey, JSON.stringify(nachrichten));
   loadWallMessages(false);
 }
 
-function clearWall() {
-  localStorage.removeItem(pinnwandKey);
+async function clearWall() {
+  try {
+    const { collection, getDocs, doc, updateDoc } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const snapshot = await getDocs(collection(window.db, "pinnwand"));
+    const updates = snapshot.docs
+      .filter((d) => !d.data().deletedAt)
+      .map((d) =>
+        updateDoc(doc(window.db, "pinnwand", d.id), {
+          deletedAt: Date.now(),
+          deletedBy: localStorage.getItem("username") || "Gast",
+        }),
+      );
+    await Promise.all(updates);
+  } catch (e) {
+    console.error("Fehler beim Leeren:", e);
+    return;
+  }
   loadWallMessages(false);
+}
+
+function getExpiryInfo(deletedAt) {
+  const deletedMs = Number(deletedAt);
+  const expiryMs = deletedMs + 30 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const remainingMs = expiryMs - now;
+  const expiryDate = new Date(expiryMs).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+  if (remainingMs <= 0) {
+    return {
+      expiryDate,
+      remainingText: "wird bald endgültig gelöscht",
+    };
+  }
+
+  const days = Math.floor(remainingMs / (24 * 60 * 60 * 1000));
+  const hours = Math.floor(
+    (remainingMs % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000),
+  );
+  const minutes = Math.floor((remainingMs % (60 * 60 * 1000)) / (60 * 1000));
+
+  let remainingText;
+  if (days > 0) {
+    remainingText = `in ${days} Tag${days === 1 ? "" : "en"}`;
+  } else if (hours > 0) {
+    remainingText = `in ${hours} Stunde${hours === 1 ? "" : "n"}`;
+  } else if (minutes > 0) {
+    remainingText = `in ${minutes} Minute${minutes === 1 ? "" : "n"}`;
+  } else {
+    remainingText = "in weniger als einer Stunde";
+  }
+
+  return {
+    expiryDate,
+    remainingText,
+  };
+}
+
+async function loadPapierkorb() {
+  const liste = document.getElementById("papierkorb-liste");
+  if (!liste) return;
+
+  liste.innerHTML = "Lädt...\n";
+
+  try {
+    const { collection, getDocs, orderBy, query } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const q = query(
+      collection(window.db, "pinnwand"),
+      orderBy("timestamp", "asc"),
+    );
+    const snapshot = await getDocs(q);
+    const gelöschte = snapshot.docs
+      .filter((d) => d.data().deletedAt)
+      .map((d) => ({ id: d.id, ...d.data() }));
+
+    liste.innerHTML = "";
+
+    if (gelöschte.length === 0) {
+      liste.innerHTML = "Papierkorb ist leer.\n";
+      return;
+    }
+
+    gelöschte.forEach((msg) => {
+      const gelöschtVon = msg.deletedBy || msg.name;
+      const gelöschtAm = new Date(msg.deletedAt).toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const geschriebenAm = new Date(Number(msg.timestamp)).toLocaleDateString(
+        "de-DE",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        },
+      );
+
+      const expiryInfo = getExpiryInfo(msg.deletedAt);
+      const item = document.createElement("div");
+      item.className = "list-group-item";
+      item.innerHTML = `
+        <div class="small text-muted mb-1">
+          <strong>${escapeHTML(gelöschtVon)}</strong> hat eine Nachricht von
+          <strong>${escapeHTML(msg.name)}</strong> gelöscht am ${gelöschtAm} —
+          <span class="text-muted">Wird automatisch gelöscht am ${expiryInfo.expiryDate} (${expiryInfo.remainingText})</span>
+        </div>
+        <div class="border rounded px-3 py-2 mb-2">
+          <span class="text-break">${escapeHTML(msg.text)}</span>
+          <span class="text-muted small ms-2 text-nowrap">- ${escapeHTML(
+            msg.name,
+          )}, ${geschriebenAm}</span>
+        </div>
+        <div class="d-flex action-buttons gap-2 justify-content-end">
+          <button type="button" class="btn btn-sm btn-outline-success wiederherstellen-btn" data-id="${msg.id}" aria-label="Nachricht wiederherstellen" title="Nachricht wiederherstellen">
+            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger endgueltig-btn" data-id="${msg.id}" aria-label="Nachricht endgültig löschen" title="Nachricht endgültig löschen">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+          </button>
+        </div>
+      `;
+      liste.appendChild(item);
+    });
+
+    liste.querySelectorAll(".wiederherstellen-btn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.getAttribute("data-id");
+        await wiederherstellenMessage(id);
+      });
+    });
+
+    liste.querySelectorAll(".endgueltig-btn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.getAttribute("data-id");
+        if (
+          confirm(
+            "Nachricht endgültig löschen? Das kann nicht rückgängig gemacht werden.",
+          )
+        ) {
+          await endgueltigLoeschen(id);
+        }
+      });
+    });
+  } catch (e) {
+    console.error("Fehler beim Laden des Papierkorbs:", e);
+    liste.innerHTML = "Fehler beim Laden.\n";
+  }
+}
+
+async function wiederherstellenMessage(id, papierkorbNeuLaden = true) {
+  try {
+    const { doc, updateDoc } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    await updateDoc(doc(window.db, "pinnwand", id), { deletedAt: null });
+  } catch (e) {
+    console.error("Fehler beim Wiederherstellen:", e);
+    return;
+  }
+  if (papierkorbNeuLaden) {
+    loadPapierkorb();
+  }
+  loadWallMessages(false);
+}
+
+async function endgueltigLoeschen(id) {
+  try {
+    const { doc, deleteDoc } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    await deleteDoc(doc(window.db, "pinnwand", id));
+  } catch (e) {
+    console.error("Fehler beim endgültigen Löschen:", e);
+    return;
+  }
+  loadPapierkorb();
+}
+
+async function papierkorbLeeren() {
+  try {
+    const { collection, getDocs, doc, deleteDoc } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const snapshot = await getDocs(collection(window.db, "pinnwand"));
+    const deletes = snapshot.docs
+      .filter((d) => d.data().deletedAt)
+      .map((d) => deleteDoc(doc(window.db, "pinnwand", d.id)));
+    await Promise.all(deletes);
+  } catch (e) {
+    console.error("Fehler beim Leeren des Papierkorbs:", e);
+    return;
+  }
+  loadPapierkorb();
+}
+
+async function alleWiederherstellen() {
+  try {
+    const { collection, getDocs, doc, updateDoc } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const snapshot = await getDocs(collection(window.db, "pinnwand"));
+    const updates = snapshot.docs
+      .filter((d) => d.data().deletedAt)
+      .map((d) =>
+        updateDoc(doc(window.db, "pinnwand", d.id), { deletedAt: null }),
+      );
+    await Promise.all(updates);
+  } catch (e) {
+    console.error("Fehler beim Wiederherstellen:", e);
+    return;
+  }
+  loadPapierkorb();
+  loadWallMessages(false);
+}
+
+async function loadPapierkorbGast() {
+  const liste = document.getElementById("papierkorb-liste");
+  if (!liste) return;
+
+  liste.innerHTML = '<div class="text-muted text-center my-3">Laedt...</div>';
+
+  const aktuellerUser = localStorage.getItem("username") || "Gast";
+
+  try {
+    const { collection, getDocs, orderBy, query } =
+      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const q = query(
+      collection(window.db, "pinnwand"),
+      orderBy("timestamp", "asc"),
+    );
+    const snapshot = await getDocs(q);
+    const gelöschte = snapshot.docs
+      .filter((d) => d.data().deletedAt && d.data().name === aktuellerUser)
+      .map((d) => ({ id: d.id, ...d.data() }));
+
+    liste.innerHTML = "";
+
+    if (gelöschte.length === 0) {
+      liste.innerHTML =
+        '<div class="text-muted text-center my-3 pin-empty-message">Dein Papierkorb ist leer.</div>';
+      return;
+    }
+
+    gelöschte.forEach((msg) => {
+      const gelöschtAm = new Date(msg.deletedAt).toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const geschriebenAm = new Date(Number(msg.timestamp)).toLocaleDateString(
+        "de-DE",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        },
+      );
+
+      const expiryInfo = getExpiryInfo(msg.deletedAt);
+      const item = document.createElement("div");
+      item.className = "list-group-item";
+      item.innerHTML = `
+        <div class="small text-muted mb-1">
+          Gelöscht am ${gelöschtAm} —
+          <span class="text-muted">Wird automatisch gelöscht am ${expiryInfo.expiryDate} (${expiryInfo.remainingText})</span>
+        </div>
+        <div class="border rounded px-3 py-2 mb-2">
+          <span class="text-break">${escapeHTML(msg.text)}</span>
+          <span class="text-muted small ms-2">- ${geschriebenAm}</span>
+        </div>
+        <div class="d-flex action-buttons gap-2 justify-content-end">
+          <button type="button" class="btn btn-sm btn-outline-success wiederherstellen-btn" data-id="${msg.id}" aria-label="Nachricht wiederherstellen" title="Nachricht wiederherstellen">
+            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+          </button>
+        </div>
+      `;
+      liste.appendChild(item);
+    });
+
+    liste.querySelectorAll(".wiederherstellen-btn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.getAttribute("data-id");
+        await wiederherstellenMessage(id, false);
+        loadPapierkorbGast();
+      });
+    });
+  } catch (e) {
+    console.error("Fehler beim Laden des Gast-Papierkorbs:", e);
+    liste.innerHTML =
+      '<div class="text-muted text-center my-3">Fehler beim Laden.</div>';
+  }
 }

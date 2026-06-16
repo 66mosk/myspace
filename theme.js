@@ -17,8 +17,7 @@ function getSavedTheme() {
     sessionStorage.removeItem("loginTheme");
     return sessionTheme;
   }
-
-  return "standard";
+  return "dark";
 }
 
 // Theme anwenden
