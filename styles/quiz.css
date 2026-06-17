@@ -1,0 +1,101 @@
+/* ========================================================================
+   Quiz
+   ======================================================================== */
+html,
+body {
+  background-color: #0f1116;
+}
+
+.quiz-seite {
+  background-color: #0f1116;
+  min-height: calc(100vh - 80px);
+  padding-top: 80px;
+  color: #f1f3f8;
+}
+
+/* ========================================================================
+   Quiz header
+   ======================================================================== */
+.quiz-header {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  background-color: #15181f;
+  color: #f1f3f8;
+}
+
+.quiz-header small {
+  color: #d6d9e4;
+}
+
+.quiz-seite .text-muted,
+.frage-box .text-muted {
+  color: #c4c8d4 !important;
+}
+
+/* ========================================================================
+   Question box
+   ======================================================================== */
+.frage-box {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #171c26;
+  color: #f1f3f8;
+  font-weight: 500;
+}
+
+/* ========================================================================
+   Answer buttons
+   ======================================================================== */
+.antwort-knopf {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #1d2430;
+  color: #f1f3f8;
+  transition: all 0.2s ease-in-out;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.antwort-knopf:hover:not(:disabled) {
+  transform: scale(1.02);
+  background-color: #29304a;
+  color: #f1f3f8 !important;
+}
+
+.buchstabe {
+  color: #6cb4ff;
+  font-weight: 800;
+}
+
+.antwort-knopf.ausgewahlt {
+  background-color: #ffc107 !important;
+  border-color: #e0a800 !important;
+  color: #0f1116 !important;
+}
+.antwort-knopf.ausgewahlt .buchstabe {
+  color: #0f1116 !important;
+}
+
+.antwort-knopf.richtig {
+  background-color: #28a745 !important;
+  border-color: #1e7e34 !important;
+  color: #fff !important;
+}
+.antwort-knopf.richtig .buchstabe {
+  color: #fff !important;
+}
+
+.antwort-knopf.falsch {
+  background-color: #dc3545 !important;
+  border-color: #bd2130 !important;
+  color: #fff !important;
+}
+.antwort-knopf.falsch .buchstabe {
+  color: #fff !important;
+}
+
+/* ========================================================================
+   End card
+   ======================================================================== */
+.ende-karte {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #15181f;
+  color: #f1f3f8;
+}

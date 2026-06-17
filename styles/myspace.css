@@ -1,0 +1,843 @@
+﻿/* ========================================================================
+   Globales styling
+   ======================================================================== */
+body {
+  background-color: #f8f9fa;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
+  color: #212529;
+}
+
+footer {
+  text-align: center;
+  padding-bottom: 1rem;
+  color: #6c757d;
+}
+/* bunt theme */
+body.theme-bunt {
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+  color: #000080;
+}
+
+/* karte bunt */
+body.theme-bunt .card {
+  background: #ffff80;
+  border: 2px solid #ff0080;
+  color: #000080;
+}
+
+/* titel bunt */
+body.theme-bunt .card-title,
+body.theme-bunt .card-subtitle {
+  color: #ff0080;
+}
+
+/* boxen bunt */
+body.theme-bunt .bg-light {
+  background-color: #fff1a8 !important;
+  border: 2px solid #ff0080;
+  color: #000080;
+}
+
+body.theme-bunt .list-group {
+  border: 2px solid #ff0080 !important;
+}
+
+/* textfarbe */
+body.theme-bunt .text-muted {
+  color: #0000ff;
+}
+
+/* links */
+body.theme-bunt a {
+  color: #ff0080;
+  text-decoration: underline;
+}
+
+/* badge */
+body.theme-bunt .badge {
+  background: #ff00ff;
+  color: #ffffff;
+}
+
+/* form farbe */
+body.theme-bunt .form-control,
+body.theme-bunt .form-select,
+body.theme-bunt .list-group-item {
+  background-color: #ffff80;
+  color: #000080;
+  border: 2px solid #ff0080;
+}
+
+/* footer text */
+body.theme-bunt footer {
+  color: #ff0080;
+  border-top: 3px dashed #ff0080;
+}
+
+/* dark theme */
+body.theme-dark {
+  background-color: #121212;
+  color: #e8eaed;
+}
+
+body.theme-dark .card {
+  background: #1f1f1f;
+  border: 1px solid #3c4043;
+  color: #e8eaed;
+}
+
+body.theme-dark #playlist li button.active-track {
+  background-color: #4a5f7f;
+  border-color: #4a5f7f;
+  color: #fff;
+}
+
+body.theme-dark .card-title,
+body.theme-dark .card-subtitle {
+  color: #f1f3f4;
+}
+
+body.theme-dark .bg-light {
+  background-color: #212121 !important;
+  border: 1px solid #3c4043;
+  color: #e8eaed;
+}
+
+.card {
+  padding: 0;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.form-select-sm {
+  text-align: center;
+}
+
+.card-body.text-center label.form-label {
+  text-align: left;
+}
+
+.audio-controls button {
+  flex-shrink: 0;
+}
+
+body.theme-dark .text-muted {
+  color: #e8eaed;
+}
+
+body.theme-dark a {
+  color: #cfd4da;
+  text-decoration: none;
+}
+
+body.theme-dark a:hover,
+body.theme-dark a:focus {
+  color: #f0f020;
+  text-decoration: underline;
+}
+
+body.theme-dark .badge {
+  background: #2a2a2a;
+  color: #e8eaed;
+}
+
+body.theme-dark .form-control,
+body.theme-dark .form-select {
+  background-color: #202124;
+  color: #e8eaed;
+  border: 1px solid #3c4043;
+}
+
+body.theme-dark .form-control::placeholder {
+  color: #b0b0b0;
+}
+
+body.theme-dark .card-body,
+body.theme-dark .card-header,
+body.theme-dark .card-footer,
+body.theme-dark .card-title,
+body.theme-dark .card-subtitle,
+body.theme-dark .list-group-item,
+body.theme-dark .text-muted,
+body.theme-dark p,
+body.theme-dark li,
+body.theme-dark label,
+body.theme-dark span {
+  color: #e8eaed;
+}
+
+body.theme-dark a {
+  color: #e8eaed;
+  text-decoration: underline;
+}
+
+body.theme-dark .text-muted {
+  color: #e8eaed;
+}
+
+body.theme-dark .card-subtitle.text-muted {
+  color: #e8eaed;
+}
+
+body.theme-dark .list-group-item {
+  background: #1f1f1f;
+  color: #e8eaed;
+  border-color: #3c4043;
+}
+
+body.theme-dark .list-group {
+  border-color: #3c4043 !important;
+}
+
+body.theme-dark .alert {
+  background-color: #2a2b2d;
+  color: #e8eaed;
+  border-color: #3c4043;
+}
+
+body.theme-dark footer {
+  color: #b0b0b0;
+  border-top: 1px solid #3c4043;
+}
+
+/* audio box */
+.audio-widget {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.theme-dark .audio-widget {
+  border-color: #3c4043;
+}
+
+body.theme-bunt .audio-widget {
+  border-color: #ff0080;
+}
+
+/* ========================================================================
+   Audio controls
+   ======================================================================== */
+
+.audio-player-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.audio-player-header > .card-title {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.audio-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.audio-controls .btn {
+  min-width: 40px;
+  width: 60px;
+}
+
+.audio-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 20rem;
+  min-width: 220px;
+}
+
+.audio-progress > .progress-wrapper {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .audio-progress-text {
+    display: none;
+  }
+}
+
+.audio-progress .progress {
+  background-color: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.audio-progress .progress-bar {
+  background-color: var(--audio-accent, #0d6efd);
+  width: 0%;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 150ms linear;
+}
+
+.audio-progress-text {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  color: inherit;
+  cursor: pointer;
+}
+
+.audio-speed-dropdown {
+  margin-left: 0.8rem;
+  position: relative;
+  font-size: 0.8rem;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.audio-speed-current,
+.audio-speed-arrow,
+.audio-speed-option {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: none;
+}
+
+.audio-speed-current {
+  align-items: center;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+  appearance: none;
+  line-height: 1;
+}
+
+.audio-speed-arrow {
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.audio-speed-dropdown.open .audio-speed-arrow {
+  transform: rotate(180deg);
+}
+
+.audio-speed-arrow:active {
+  opacity: 1;
+}
+
+.audio-speed-list {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  margin: 0;
+  padding: 0.3rem 0;
+  list-style: none;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(33, 37, 41, 0.12);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+  z-index: 10;
+}
+
+.audio-speed-list .audio-speed-option {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  color: inherit;
+  font-size: 0.78rem;
+}
+
+.audio-speed-dropdown.open .audio-speed-list {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.audio-speed-option {
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  color: inherit;
+  font-size: 0.78rem;
+}
+
+.audio-speed-option:hover,
+.audio-speed-option.active {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+
+.audio-speed-option.active {
+  font-weight: 700;
+}
+
+.audio-speed-dropdown:focus-visible .audio-speed-current {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.18);
+}
+button:focus-visible,
+.btn:focus-visible,
+.delete-msg-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.45);
+}
+body.theme-dark .audio-progress .progress {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+body.theme-dark .audio-progress .progress-bar {
+  --audio-accent: #66b2ff;
+}
+
+body.theme-bunt .audio-progress .progress {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+body.theme-bunt .audio-progress .progress-bar {
+  background: linear-gradient(90deg, #ff0080, #00ffff, #ffff00);
+}
+
+body:not(.theme-dark):not(.theme-bunt) .audio-progress .progress-bar {
+  --audio-accent: #0d6efd;
+}
+
+/* Audio speed dropdown themes */
+/* Dark theme */
+body.theme-dark .audio-speed-list {
+  background: rgba(31, 31, 31, 0.98);
+  border: 1px solid #3c4043;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+body.theme-dark .audio-speed-option {
+  color: #e8eaed;
+}
+
+body.theme-dark .audio-speed-option:hover,
+body.theme-dark .audio-speed-option.active {
+  background-color: rgba(102, 178, 255, 0.15);
+}
+
+body.theme-dark .audio-speed-current {
+  background-color: rgba(232, 234, 237, 0.08);
+  color: #e8eaed;
+  border: 1px solid #3c4043;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+}
+
+body.theme-dark .audio-speed-current:hover {
+  background-color: rgba(232, 234, 237, 0.12);
+}
+
+body.theme-dark .audio-speed-arrow {
+  background-color: rgba(232, 234, 237, 0.08);
+  color: #e8eaed;
+  border: 1px solid #3c4043;
+  padding: 0.3rem 0.4rem;
+  border-radius: 0.4rem;
+}
+
+body.theme-dark .audio-speed-arrow:hover {
+  background-color: rgba(232, 234, 237, 0.12);
+}
+
+/* Bunt theme */
+body.theme-bunt .audio-speed-list {
+  background: #ffff80;
+  border: 2px solid #ff0080;
+  box-shadow: 0 10px 24px rgba(255, 0, 128, 0.2);
+}
+
+body.theme-bunt .audio-speed-option {
+  color: #000080;
+}
+
+body.theme-bunt .audio-speed-option:hover,
+body.theme-bunt .audio-speed-option.active {
+  background-color: rgba(255, 0, 128, 0.2);
+}
+
+body.theme-bunt .audio-speed-current {
+  background-color: rgba(255, 255, 128, 0.4);
+  color: #000080;
+  border: 2px solid #ff0080;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  font-weight: 600;
+}
+
+body.theme-bunt .audio-speed-current:hover {
+  background-color: rgba(255, 255, 128, 0.6);
+}
+
+body.theme-bunt .audio-speed-arrow {
+  background-color: rgba(255, 255, 128, 0.4);
+  color: #000080;
+  border: 2px solid #ff0080;
+  padding: 0.3rem 0.4rem;
+  border-radius: 0.4rem;
+  font-weight: 600;
+}
+
+body.theme-bunt .audio-speed-arrow:hover {
+  background-color: rgba(255, 255, 128, 0.6);
+}
+
+/* Standard theme */
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-list {
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(33, 37, 41, 0.15);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-option {
+  color: #212529;
+}
+
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-option:hover,
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-option.active {
+  background-color: rgba(13, 110, 253, 0.12);
+}
+
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-current {
+  background-color: rgba(13, 110, 253, 0.08);
+  color: #212529;
+  border: 1px solid rgba(13, 110, 253, 0.2);
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+}
+
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-current:hover {
+  background-color: rgba(13, 110, 253, 0.12);
+}
+
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-arrow {
+  background-color: rgba(13, 110, 253, 0.08);
+  color: #212529;
+  border: 1px solid rgba(13, 110, 253, 0.2);
+  padding: 0.3rem 0.4rem;
+  border-radius: 0.4rem;
+}
+
+body:not(.theme-dark):not(.theme-bunt) .audio-speed-arrow:hover {
+  background-color: rgba(13, 110, 253, 0.12);
+}
+
+.audio-progress-tooltip {
+  position: absolute;
+  top: -34px;
+  left: 0;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  border-radius: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+  z-index: 30;
+}
+
+.audio-progress-tooltip.visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audio-progress .progress-bar,
+  .audio-progress-tooltip {
+    transition: none !important;
+  }
+}
+
+/* ========================================================================
+   Playlist
+   ======================================================================== */
+#playlist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#playlist li {
+  margin: 0;
+}
+
+#playlist li button {
+  width: 100%;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+#playlist li button:hover {
+  transform: translateY(-1px);
+}
+
+#playlist li button.active-track {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+  box-shadow: none;
+}
+
+.login-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#playlist li button.active-track:hover {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
+}
+
+body.theme-bunt #playlist li button.active-track {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-color: #000080;
+  color: #000080;
+}
+
+body.theme-dark .text-muted,
+body.theme-dark .card-subtitle,
+body.theme-dark .card-subtitle.text-muted,
+body.theme-dark .card-title,
+body.theme-dark p,
+body.theme-dark li,
+body.theme-dark label,
+body.theme-dark span,
+body.theme-dark .list-group-item,
+body.theme-dark .card .display-3 {
+  color: #e8eaed !important;
+}
+
+.card .display-3 {
+  font-size: 3rem;
+}
+
+#nachrichten-liste .list-group-item {
+  white-space: normal;
+}
+
+/* ========================================================================
+   Pinnwand-Styles
+   ======================================================================== */
+
+.msg-bubble {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.msg-text {
+  white-space: pre-wrap;
+}
+
+.msg-time {
+  font-size: 0.7em;
+  opacity: 0.8;
+  margin-top: 3px;
+}
+
+.msg-time-own {
+  color: #e0e0e0 !important;
+}
+
+.delete-msg-btn-own {
+  font-size: 1.1rem;
+  line-height: 1;
+  background: transparent;
+  color: #ff8080 !important;
+}
+
+.delete-msg-btn-other {
+  font-size: 1.1rem;
+  line-height: 1;
+  background: transparent;
+  color: #dc3545 !important;
+}
+
+/* Avatar icon styling (moved from inline styles) */
+.avatar-icon {
+  color: #000;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.12));
+}
+
+/* small helper color for coffee mug icon */
+.text-brown {
+  color: #8b4513 !important;
+}
+
+#nachrichten-liste {
+  max-height: 55vh;
+  height: auto;
+  min-height: 120px;
+  max-height: 700px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ========================================================================
+   Papierkorb und Chat-Liste
+   ======================================================================== */
+#papierkorb-liste {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.list-group-item-chat {
+  width: fit-content;
+  max-width: 85%;
+}
+
+@media (min-width: 1200px) {
+  #nachrichten-liste {
+    max-height: 600px;
+  }
+}
+
+.pinnwand-bg {
+  background-color: #ffffff;
+}
+
+body.theme-dark .pinnwand-bg {
+  background-color: #1f1f1f !important;
+}
+
+body.theme-bunt .pinnwand-bg {
+  background-color: #ffff80 !important;
+}
+
+.pinnwand-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.pinnwand-header .card-title {
+  line-height: 1.4;
+}
+
+.pinnwand-actions {
+  align-items: center;
+}
+
+.pinnwand-actions .btn {
+  white-space: nowrap;
+}
+
+#papierkorb-liste .list-group-item {
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#papierkorb-liste .action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+#papierkorb-liste .action-buttons .btn {
+  min-width: 5.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (max-width: 768px) {
+  .pinnwand-header {
+    align-items: stretch;
+  }
+
+  .pinnwand-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .pinnwand-actions .btn {
+    flex: 1 1 11rem;
+  }
+
+  #papierkorb-liste .action-buttons {
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  #papierkorb-liste .action-buttons .btn {
+    flex: 1 1 45%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .audio-player-header,
+  .audio-progress,
+  .pinnwand-actions,
+  #chatlängensteuerung-container {
+    min-width: 0;
+  }
+
+  .audio-progress {
+    flex-basis: 100%;
+  }
+
+  .audio-controls .btn {
+    width: 48px;
+  }
+
+  #playlist {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pinnwand-actions .btn,
+  #chatlängensteuerung-container button {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}
+
+#chatlängensteuerung-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  justify-self: center;
+}
+
+#chatlängensteuerung-container button {
+  white-space: nowrap;
+}
