@@ -1,4 +1,6 @@
-// Benutzerverwaltung
+/* ========================================================================
+   Benutzerverwaltung
+   ======================================================================== */
 function getUsername() {
   return localStorage.getItem("username") || "Gast";
 }
@@ -50,19 +52,23 @@ function updatePageUrl(page, replace = false) {
   }
 }
 
-// Seiten laden
+/* ========================================================================
+   Seiten laden / Navigation
+   ======================================================================== */
 async function zeigePage(seite, event, options = { replaceHistory: false }) {
   if (event) event.preventDefault();
 
   const inhalt = document.getElementById("inhalt");
   const myspaceStyle = document.getElementById("stylesheet-myspace");
   const lebenslaufStyle = document.getElementById("stylesheet-lebenslauf");
+  const quizStyle = document.getElementById("stylesheet-quiz");
 
   if (!inhalt) return;
 
   // Style umschalten
   if (myspaceStyle) myspaceStyle.disabled = seite !== "myspace";
   if (lebenslaufStyle) lebenslaufStyle.disabled = seite !== "lebenslauf";
+  if (quizStyle) quizStyle.disabled = seite !== "quiz";
 
   try {
     const response = await fetch(`${seite}.html`);
@@ -93,6 +99,19 @@ async function zeigePage(seite, event, options = { replaceHistory: false }) {
     } else if (seite === "lebenslauf") {
       const main = doc.querySelector(".seite");
       inhalt.innerHTML = main ? main.outerHTML : data;
+    } else if (seite === "quiz") {
+      const main = doc.querySelector("main.quiz-seite");
+      inhalt.innerHTML = main ? main.outerHTML : data;
+
+      const oldScript = document.querySelector('script[src^="quiz.js"]');
+      if (oldScript) oldScript.remove();
+
+      const script = document.createElement("script");
+      script.src = "quiz.js?v=" + Date.now();
+      script.onload = () => {
+        if (typeof starteQuiz === "function") starteQuiz();
+      };
+      document.body.appendChild(script);
     }
 
     localStorage.setItem("aktuelleSeite", seite);
@@ -102,7 +121,9 @@ async function zeigePage(seite, event, options = { replaceHistory: false }) {
   }
 }
 
-// Login prüfen
+/* ========================================================================
+   Login prüfen
+   ======================================================================== */
 function checkLogin() {
   const usernameRaw = localStorage.getItem("username");
   const username = usernameRaw ? String(usernameRaw).trim() : "";
@@ -141,6 +162,32 @@ window.addEventListener("DOMContentLoaded", () => {
     const letzteSeite =
       urlPage || localStorage.getItem("aktuelleSeite") || "myspace";
     zeigePage(letzteSeite, null, { replaceHistory: true });
+
+    const aktuellerUser = localStorage.getItem("username");
+    if (aktuellerUser && aktuellerUser !== "Gast") {
+      const checkDB = setInterval(async () => {
+        if (window.db && window.dbHelpers) {
+          clearInterval(checkDB);
+          const { doc, getDoc } = window.dbHelpers;
+          const userDocRef = doc(window.db, "users", aktuellerUser);
+          try {
+            const docSnap = await getDoc(userDocRef);
+            if (docSnap.exists()) {
+              const firebaseData = docSnap.data();
+              if (firebaseData.theme) {
+                applyTheme(firebaseData.theme, true);
+                const themeSelect = document.getElementById("theme-select");
+                if (themeSelect) {
+                  themeSelect.value = firebaseData.theme;
+                }
+              }
+            }
+          } catch (err) {
+            console.error("Fehler beim Laden des Profils aus Firestore:", err);
+          }
+        }
+      }, 50);
+    }
   }
 
   window.addEventListener("popstate", (event) => {

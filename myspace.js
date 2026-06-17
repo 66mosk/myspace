@@ -1,3 +1,6 @@
+/* ========================================================================
+   MySpace-Grundfunktionen
+   ======================================================================== */
 // alter
 const geburtsdatum = new Date(2005, 11, 7);
 
@@ -19,6 +22,9 @@ function istUserAdmin(username) {
   return admins.includes(username);
 }
 
+/* ========================================================================
+   Initialisierung der MySpace-Seite
+   ======================================================================== */
 function initializeMyspace() {
   const alterFeld = document.getElementById("alter-anzeige");
   if (alterFeld) {
@@ -27,16 +33,36 @@ function initializeMyspace() {
 
   const isGuest = localStorage.getItem("isGuest") === "true";
   const statusSelect = document.getElementById("status-select");
+  const statusIcon = document.getElementById("status-icon");
+
+  const statusIconMap = {
+    online: '<i class="fa-solid fa-circle text-success"></i>',
+    away: '<i class="fa-solid fa-circle text-warning"></i>',
+    coffee: '<i class="fa-solid fa-mug-hot text-brown"></i>',
+    coding: '<i class="fa-solid fa-laptop-code text-primary"></i>',
+    offline: '<i class="fa-solid fa-circle text-danger"></i>',
+  };
+
+  function setStatusDisplay(key) {
+    if (statusIcon)
+      statusIcon.innerHTML = statusIconMap[key] || statusIconMap.offline;
+    if (statusSelect) statusSelect.value = key;
+  }
+
   if (statusSelect) {
+    // Lade gespeicherten Status (direkte Schlüssel: online/away/coffee/coding/offline)
+    const gespeicherterStatus = localStorage.getItem("userStatus") || "online";
+
     if (isGuest) {
       statusSelect.disabled = true;
-      statusSelect.value = localStorage.getItem("userStatus") || "Offline";
+      setStatusDisplay("offline");
+      localStorage.setItem("userStatus", "offline");
     } else {
-      const gespeicherterStatus =
-        localStorage.getItem("userStatus") || "Online";
-      statusSelect.value = gespeicherterStatus;
+      setStatusDisplay(gespeicherterStatus);
       statusSelect.addEventListener("change", (e) => {
-        localStorage.setItem("userStatus", e.target.value);
+        const val = e.target.value;
+        localStorage.setItem("userStatus", val);
+        setStatusDisplay(val);
       });
     }
   }
@@ -119,7 +145,8 @@ function initializeMyspace() {
         }
         if (papierkorbLeerenBtn) papierkorbLeerenBtn.classList.add("d-none");
         if (pinnwandTitel) pinnwandTitel.textContent = "Pinnwand";
-        tabPapierkorb.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i> Papierkorb';
+        tabPapierkorb.innerHTML =
+          '<i class="fa-solid fa-trash-can me-1"></i> Papierkorb';
         tabPapierkorb.classList.replace(
           "btn-secondary",
           "btn-outline-secondary",
@@ -133,7 +160,8 @@ function initializeMyspace() {
         }
         if (papierkorbLeerenBtn) papierkorbLeerenBtn.classList.remove("d-none");
         if (pinnwandTitel) pinnwandTitel.textContent = "Papierkorb";
-        tabPapierkorb.innerHTML = '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Zurück';
+        tabPapierkorb.innerHTML =
+          '<i class="fa-solid fa-arrow-left me-1"></i> Zurück';
         tabPapierkorb.classList.replace(
           "btn-outline-secondary",
           "btn-secondary",
@@ -151,7 +179,7 @@ function initializeMyspace() {
     papierkorbLeerenBtn?.addEventListener("click", () => {
       if (
         confirm(
-          "Papierkorb wirklich leeren? Alle gelöschten Nachrichten werden endgueltig entfernt.",
+          "Papierkorb wirklich leeren? Alle gelöschten Nachrichten werden endgültig entfernt.",
         )
       ) {
         papierkorbLeeren();
@@ -159,7 +187,9 @@ function initializeMyspace() {
     });
   }
 
-  // Gast-Papierkorb
+  /* ========================================================================
+     Gast-Papierkorb
+     ======================================================================== */
   if (isGuest && !istUserAdmin(aktuellerUserAdmin)) {
     const tabPapierkorb = document.getElementById("tab-papierkorb");
     const pinnwandInhalt = document.getElementById("pinnwand-inhalt");
@@ -175,7 +205,8 @@ function initializeMyspace() {
         pinnwandInhalt.classList.remove("d-none");
         papierkorbInhalt.classList.add("d-none");
         if (pinnwandTitel) pinnwandTitel.textContent = "Pinnwand";
-        tabPapierkorb.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i> Papierkorb';
+        tabPapierkorb.innerHTML =
+          '<i class="fa-solid fa-trash-can me-1"></i> Papierkorb';
         tabPapierkorb.classList.replace(
           "btn-secondary",
           "btn-outline-secondary",
@@ -184,7 +215,8 @@ function initializeMyspace() {
         pinnwandInhalt.classList.add("d-none");
         papierkorbInhalt.classList.remove("d-none");
         if (pinnwandTitel) pinnwandTitel.textContent = "Papierkorb";
-        tabPapierkorb.innerHTML = '<i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Zurück';
+        tabPapierkorb.innerHTML =
+          '<i class="fa-solid fa-arrow-left me-1"></i> Zurück';
         tabPapierkorb.classList.replace(
           "btn-outline-secondary",
           "btn-secondary",
@@ -194,7 +226,9 @@ function initializeMyspace() {
     });
   }
 
-  // Musik-Player
+  /* ========================================================================
+     Audio-Player / Musik-Player
+     ======================================================================== */
   const playlist = [
     {
       src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
@@ -276,8 +310,8 @@ function initializeMyspace() {
   function updatePlayPauseButton() {
     if (!playPauseButton) return;
     playPauseButton.innerHTML = isPlayingState
-      ? '<i class="fa-solid fa-pause" aria-hidden="true"></i>'
-      : '<i class="fa-solid fa-play" aria-hidden="true"></i>';
+      ? '<i class="fa-solid fa-pause"></i>'
+      : '<i class="fa-solid fa-play"></i>';
     playPauseButton.setAttribute(
       "aria-label",
       isPlayingState ? "Pause" : "Play",
@@ -642,7 +676,7 @@ function initializeMyspace() {
       sessionStorage.setItem("screamPlayed", "true");
       currentlyPlayingScream = true;
       if (speedDropdown) speedDropdown.classList.add("disabled");
-      audio.src = "Wilhelm_Scream.ogg";
+      audio.src = "Wilhelm_Scream.mp3";
       audio.load();
       audio
         .play()
@@ -657,7 +691,9 @@ function initializeMyspace() {
   }
 }
 
-// Pinnwand
+/* ========================================================================
+   Pinnwand
+   ======================================================================== */
 let cooldownAktiv = false;
 let aktuellSichtbar = 10;
 let alleNachrichten = [];
@@ -704,8 +740,10 @@ async function nachrichtSenden() {
   };
 
   try {
-    const { collection, addDoc } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { collection, addDoc } = window.dbHelpers || {};
+    if (!collection || !addDoc) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     await addDoc(collection(window.db, "pinnwand"), neueNachricht);
   } catch (e) {
     console.error("Fehler beim Speichern:", e);
@@ -716,7 +754,7 @@ async function nachrichtSenden() {
   cooldownAktiv = true;
   postBtn.disabled = true;
   const originalText = postBtn.textContent;
-  postBtn.textContent = "…";
+  postBtn.textContent = "⏳";
 
   setTimeout(() => {
     cooldownAktiv = false;
@@ -736,7 +774,10 @@ async function loadWallMessages(autoScroll = false, ausDatenbankLaden = true) {
   if (ausDatenbankLaden) {
     try {
       const { collection, getDocs, orderBy, query, doc, deleteDoc } =
-        await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+        window.dbHelpers || {};
+      if (!collection || !getDocs || !orderBy || !query || !doc || !deleteDoc) {
+        throw new Error("Firestore helper functions sind nicht verfügbar.");
+      }
       const q = query(
         collection(window.db, "pinnwand"),
         orderBy("timestamp", "asc"),
@@ -823,10 +864,11 @@ async function loadWallMessages(autoScroll = false, ausDatenbankLaden = true) {
     }
 
     const darfLoeschen = istEigener || istAdmin;
+    const deleteClass = istEigener
+      ? "delete-msg-btn-own"
+      : "delete-msg-btn-other";
     const deleteBtnHtml = darfLoeschen
-      ? `<button class="btn btn-sm text-danger border-0 p-0 delete-msg-btn ms-2" data-id="${msg.id}" title="Nachricht löschen" aria-label="Nachricht löschen" style="font-size: 1.1rem; line-height: 1; background: transparent; color: ${
-          istEigener ? "#ff8080" : "#dc3545"
-        } !important;">&times;</button>`
+      ? `<button class="btn btn-sm text-danger border-0 p-0 delete-msg-btn ms-2 ${deleteClass}" data-id="${msg.id}" title="Nachricht löschen" aria-label="Nachricht löschen">&times;</button>`
       : "";
 
     const sichererText = escapeHTML(msg.text);
@@ -835,14 +877,12 @@ async function loadWallMessages(autoScroll = false, ausDatenbankLaden = true) {
       ${headerHtml}
       <div class="rounded p-2 px-3 shadow-sm ${
         istEigener ? "bg-primary text-white" : "bg-light text-dark"
-      }" style="width: fit-content; max-width: 100%;">
+      } msg-bubble">
         <div class="d-flex justify-content-between align-items-start gap-3">
-          <span class="text-break" style="white-space: pre-wrap;">${sichererText}</span>
+          <span class="text-break msg-text">${sichererText}</span>
           ${deleteBtnHtml}
         </div>
-        <div class="text-end text-muted" style="font-size: 0.7em; opacity: 0.8; margin-top: 3px; color: ${
-          istEigener ? "#e0e0e0" : "inherit"
-        } !important;">
+        <div class="text-end text-muted msg-time ${istEigener ? "msg-time-own" : ""}">
           ${msg.zeit}
         </div>
       </div>
@@ -918,8 +958,10 @@ function renderChatlängensteuerungButtons(totalMessages) {
 
 async function deleteMessage(id) {
   try {
-    const { doc, updateDoc } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { doc, updateDoc } = window.dbHelpers || {};
+    if (!doc || !updateDoc) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     await updateDoc(doc(window.db, "pinnwand", id), {
       deletedAt: Date.now(),
       deletedBy: localStorage.getItem("username") || "Gast",
@@ -933,8 +975,10 @@ async function deleteMessage(id) {
 
 async function clearWall() {
   try {
-    const { collection, getDocs, doc, updateDoc } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { collection, getDocs, doc, updateDoc } = window.dbHelpers || {};
+    if (!collection || !getDocs || !doc || !updateDoc) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     const snapshot = await getDocs(collection(window.db, "pinnwand"));
     const updates = snapshot.docs
       .filter((d) => !d.data().deletedAt)
@@ -1000,8 +1044,10 @@ async function loadPapierkorb() {
   liste.innerHTML = "Lädt...\n";
 
   try {
-    const { collection, getDocs, orderBy, query } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { collection, getDocs, orderBy, query } = window.dbHelpers || {};
+    if (!collection || !getDocs || !orderBy || !query) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     const q = query(
       collection(window.db, "pinnwand"),
       orderBy("timestamp", "asc"),
@@ -1055,10 +1101,10 @@ async function loadPapierkorb() {
         </div>
         <div class="d-flex action-buttons gap-2 justify-content-end">
           <button type="button" class="btn btn-sm btn-outline-success wiederherstellen-btn" data-id="${msg.id}" aria-label="Nachricht wiederherstellen" title="Nachricht wiederherstellen">
-            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+            \u21A9
           </button>
-          <button type="button" class="btn btn-sm btn-outline-danger endgueltig-btn" data-id="${msg.id}" aria-label="Nachricht endgültig löschen" title="Nachricht endgültig löschen">
-            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+          <button type="button" class="btn btn-sm btn-outline-danger endgültig-btn" data-id="${msg.id}" aria-label="Nachricht endgültig löschen" title="Nachricht endgültig löschen">
+            \uD83D\uDDD1\uFE0F
           </button>
         </div>
       `;
@@ -1072,7 +1118,7 @@ async function loadPapierkorb() {
       });
     });
 
-    liste.querySelectorAll(".endgueltig-btn").forEach((btn) => {
+    liste.querySelectorAll(".endgültig-btn").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const id = e.target.getAttribute("data-id");
         if (
@@ -1080,7 +1126,7 @@ async function loadPapierkorb() {
             "Nachricht endgültig löschen? Das kann nicht rückgängig gemacht werden.",
           )
         ) {
-          await endgueltigLoeschen(id);
+          await endgültigLoeschen(id);
         }
       });
     });
@@ -1092,8 +1138,10 @@ async function loadPapierkorb() {
 
 async function wiederherstellenMessage(id, papierkorbNeuLaden = true) {
   try {
-    const { doc, updateDoc } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { doc, updateDoc } = window.dbHelpers || {};
+    if (!doc || !updateDoc) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     await updateDoc(doc(window.db, "pinnwand", id), { deletedAt: null });
   } catch (e) {
     console.error("Fehler beim Wiederherstellen:", e);
@@ -1105,10 +1153,12 @@ async function wiederherstellenMessage(id, papierkorbNeuLaden = true) {
   loadWallMessages(false);
 }
 
-async function endgueltigLoeschen(id) {
+async function endgültigLoeschen(id) {
   try {
-    const { doc, deleteDoc } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { doc, deleteDoc } = window.dbHelpers || {};
+    if (!doc || !deleteDoc) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     await deleteDoc(doc(window.db, "pinnwand", id));
   } catch (e) {
     console.error("Fehler beim endgültigen Löschen:", e);
@@ -1119,8 +1169,10 @@ async function endgueltigLoeschen(id) {
 
 async function papierkorbLeeren() {
   try {
-    const { collection, getDocs, doc, deleteDoc } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { collection, getDocs, doc, deleteDoc } = window.dbHelpers || {};
+    if (!collection || !getDocs || !doc || !deleteDoc) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     const snapshot = await getDocs(collection(window.db, "pinnwand"));
     const deletes = snapshot.docs
       .filter((d) => d.data().deletedAt)
@@ -1135,8 +1187,10 @@ async function papierkorbLeeren() {
 
 async function alleWiederherstellen() {
   try {
-    const { collection, getDocs, doc, updateDoc } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { collection, getDocs, doc, updateDoc } = window.dbHelpers || {};
+    if (!collection || !getDocs || !doc || !updateDoc) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     const snapshot = await getDocs(collection(window.db, "pinnwand"));
     const updates = snapshot.docs
       .filter((d) => d.data().deletedAt)
@@ -1161,8 +1215,10 @@ async function loadPapierkorbGast() {
   const aktuellerUser = localStorage.getItem("username") || "Gast";
 
   try {
-    const { collection, getDocs, orderBy, query } =
-      await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js");
+    const { collection, getDocs, orderBy, query } = window.dbHelpers || {};
+    if (!collection || !getDocs || !orderBy || !query) {
+      throw new Error("Firestore helper functions sind nicht verfügbar.");
+    }
     const q = query(
       collection(window.db, "pinnwand"),
       orderBy("timestamp", "asc"),
@@ -1213,7 +1269,7 @@ async function loadPapierkorbGast() {
         </div>
         <div class="d-flex action-buttons gap-2 justify-content-end">
           <button type="button" class="btn btn-sm btn-outline-success wiederherstellen-btn" data-id="${msg.id}" aria-label="Nachricht wiederherstellen" title="Nachricht wiederherstellen">
-            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+            \u21A9
           </button>
         </div>
       `;

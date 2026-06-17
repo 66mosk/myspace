@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="styles/index.css" />
     <link id="stylesheet-myspace" rel="stylesheet" href="styles/myspace.css" />
+    <script type="module" src="firebase-init.js"></script>
   </head>
   <body class="login-page">
     <div class="text-center py-5">
@@ -115,9 +116,26 @@
         }, 10000);
       }
 
+      async function hashPassword(password, salt) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password + salt);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      function generateSalt() {
+        const array = new Uint8Array(16);
+        crypto.getRandomValues(array);
+        return Array.from(array)
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
       document
         .getElementById("login-form")
-        .addEventListener("submit", function (event) {
+        .addEventListener("submit", async function (event) {
           event.preventDefault();
           const username = document.getElementById("username").value.trim();
           const password = document.getElementById("password").value;
@@ -130,29 +148,86 @@
             return;
           }
 
-          if (password !== "Starten1" || username !== "wamos05") {
-            error.textContent = "Benutzername oder Passwort nicht korrekt.";
+          if (!window.dbReady) {
+            error.textContent =
+              "Datenbankverbindung wird aufgebaut. Bitte erneut versuchen.";
             error.classList.remove("d-none");
             return;
           }
 
-          localStorage.setItem("username", username);
-          localStorage.removeItem("isGuest");
-          sessionStorage.removeItem("screamPlayed");
-
-          const userTheme = localStorage.getItem("theme_" + username);
-          if (userTheme) {
-            localStorage.setItem("siteTheme", userTheme);
-          } else {
-            localStorage.setItem("siteTheme", "dark");
+          await window.dbReady;
+          if (!window.db || !window.dbHelpers) {
+            error.textContent =
+              "Datenbankverbindung konnte nicht hergestellt werden.";
+            error.classList.remove("d-none");
+            return;
           }
 
-          window.location.href = "index.html";
+          const { doc, getDoc, setDoc } = window.dbHelpers;
+          const userDocRef = doc(window.db, "users", username);
+
+          try {
+            let docSnap = await getDoc(userDocRef);
+
+            if (!docSnap.exists() && username.toLowerCase() === "wamos05") {
+              const initialSalt = generateSalt();
+              const initialHash = await hashPassword("Starten1", initialSalt);
+
+              await setDoc(userDocRef, {
+                username: username,
+                isGuest: false,
+                theme: "dark",
+                salt: initialSalt,
+                passwordHash: initialHash,
+              });
+
+              docSnap = await getDoc(userDocRef);
+            }
+
+            if (!docSnap.exists()) {
+              error.textContent = "Benutzername oder Passwort nicht korrekt.";
+              error.classList.remove("d-none");
+              return;
+            }
+
+            const userData = docSnap.data();
+
+            if (!userData.passwordHash || !userData.salt) {
+              error.textContent =
+                "Dieser Account hat kein Passwort. Bitte als Gast anmelden.";
+              error.classList.remove("d-none");
+              return;
+            }
+
+            const enteredHash = await hashPassword(password, userData.salt);
+            if (enteredHash !== userData.passwordHash) {
+              error.textContent = "Benutzername oder Passwort nicht korrekt.";
+              error.classList.remove("d-none");
+              return;
+            }
+
+            localStorage.setItem("username", username);
+            localStorage.removeItem("isGuest");
+            sessionStorage.removeItem("screamPlayed");
+
+            if (userData.theme) {
+              localStorage.setItem("siteTheme", userData.theme);
+            } else {
+              localStorage.setItem("siteTheme", "dark");
+            }
+
+            window.location.href = "index.html";
+          } catch (err) {
+            console.error("Firestore Login Fehler:", err);
+            error.textContent =
+              "Fehler bei der Authentifizierung mit der Datenbank.";
+            error.classList.remove("d-none");
+          }
         });
 
       document
         .getElementById("guest-btn")
-        .addEventListener("click", function () {
+        .addEventListener("click", async function () {
           const username = document.getElementById("username").value.trim();
           const error = document.getElementById("error");
           error.classList.add("d-none");
@@ -169,18 +244,61 @@
             return;
           }
 
-          localStorage.setItem("username", username);
-          localStorage.setItem("isGuest", "true");
-          sessionStorage.removeItem("screamPlayed");
-
-          const userTheme = localStorage.getItem("theme_" + username);
-          if (userTheme) {
-            localStorage.setItem("siteTheme", userTheme);
-          } else {
-            localStorage.setItem("siteTheme", "dark");
+          if (!window.dbReady) {
+            error.textContent =
+              "Datenbankverbindung wird aufgebaut. Bitte erneut versuchen.";
+            error.classList.remove("d-none");
+            return;
           }
 
-          window.location.href = "index.html";
+          await window.dbReady;
+          if (!window.db || !window.dbHelpers) {
+            error.textContent =
+              "Datenbankverbindung konnte nicht hergestellt werden.";
+            error.classList.remove("d-none");
+            return;
+          }
+
+          const { doc, getDoc, setDoc } = window.dbHelpers;
+          const userDocRef = doc(window.db, "users", username);
+
+          try {
+            const docSnap = await getDoc(userDocRef);
+            let userSettings;
+
+            if (docSnap.exists()) {
+              userSettings = docSnap.data();
+              if (userSettings.passwordHash) {
+                error.textContent =
+                  "Dieser Benutzername erfordert eine Passwort-Anmeldung!";
+                error.classList.remove("d-none");
+                return;
+              }
+            } else {
+              userSettings = {
+                username: username,
+                isGuest: true,
+                theme: "dark",
+              };
+              await setDoc(userDocRef, userSettings);
+            }
+
+            localStorage.setItem("username", username);
+            localStorage.setItem("isGuest", "true");
+            sessionStorage.removeItem("screamPlayed");
+
+            if (userSettings.theme) {
+              localStorage.setItem("siteTheme", userSettings.theme);
+            } else {
+              localStorage.setItem("siteTheme", "dark");
+            }
+
+            window.location.href = "index.html";
+          } catch (err) {
+            console.error("Firestore Guest Login Fehler:", err);
+            error.textContent = "Fehler beim Laden des Gast-Profils.";
+            error.classList.remove("d-none");
+          }
         });
     </script>
   </body>

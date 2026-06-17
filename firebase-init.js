@@ -1,5 +1,17 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  deleteDoc,
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBoavzFhfl2Hnp3GVKElnAJGUqJVTd02IE",
@@ -11,4 +23,19 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-window.db = getFirestore(app);
+window.dbReady = (async () => {
+  window.db = getFirestore(app);
+  window.dbHelpers = {
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    addDoc,
+    collection,
+    getDocs,
+    query,
+    orderBy,
+    deleteDoc,
+  };
+  return window.dbHelpers;
+})();
