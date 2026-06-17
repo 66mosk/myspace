@@ -1,4 +1,7 @@
-﻿body {
+﻿/* ========================================================================
+   Globales styling
+   ======================================================================== */
+body {
   background-color: #f8f9fa;
   font-family:
     system-ui,
@@ -222,7 +225,9 @@ body.theme-bunt .audio-widget {
   border-color: #ff0080;
 }
 
-/* audio buttons */
+/* ========================================================================
+   Audio controls
+   ======================================================================== */
 
 .audio-player-header {
   display: flex;
@@ -325,7 +330,6 @@ body.theme-bunt .audio-widget {
   justify-content: center;
   cursor: pointer;
   transition: transform 120ms ease;
-  font-size: 0.75rem;
 }
 
 .audio-speed-dropdown.open .audio-speed-arrow {
@@ -571,6 +575,9 @@ body:not(.theme-dark):not(.theme-bunt) .audio-speed-arrow:hover {
   }
 }
 
+/* ========================================================================
+   Playlist
+   ======================================================================== */
 #playlist {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -640,6 +647,55 @@ body.theme-dark .card .display-3 {
   white-space: normal;
 }
 
+/* ========================================================================
+   Pinnwand-Styles
+   ======================================================================== */
+
+.msg-bubble {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.msg-text {
+  white-space: pre-wrap;
+}
+
+.msg-time {
+  font-size: 0.7em;
+  opacity: 0.8;
+  margin-top: 3px;
+}
+
+.msg-time-own {
+  color: #e0e0e0 !important;
+}
+
+.delete-msg-btn-own {
+  font-size: 1.1rem;
+  line-height: 1;
+  background: transparent;
+  color: #ff8080 !important;
+}
+
+.delete-msg-btn-other {
+  font-size: 1.1rem;
+  line-height: 1;
+  background: transparent;
+  color: #dc3545 !important;
+}
+
+/* Avatar icon styling (moved from inline styles) */
+.avatar-icon {
+  color: #000;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.12));
+}
+
+/* small helper color for coffee mug icon */
+.text-brown {
+  color: #8b4513 !important;
+}
+
 #nachrichten-liste {
   max-height: 55vh;
   height: auto;
@@ -651,6 +707,9 @@ body.theme-dark .card .display-3 {
   gap: 6px;
 }
 
+/* ========================================================================
+   Papierkorb und Chat-Liste
+   ======================================================================== */
 #papierkorb-liste {
   max-height: 600px;
   overflow-y: auto;
